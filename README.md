@@ -1,4 +1,3 @@
-
 # ECSE 429 Software Validation Project, Fall 2015
 TouchCORE tool project (subset) for the ECSE429 Software Validation, Fall 2015 course at McGill University.
 TouchCORE is a multitouch-enabled tool for concern-oriented software design modeling aimed at developing scalable and reusable software design concern models. The version provided here only contains functionality to create *Reusable Aspect Models* (RAM), or *Aspects*, which is a multi-view modelling notation supporting structure and behaviour using class, sequence and state diagrams (here called structure, message and state views). The goal of this project is to test parts of the message views. The full version can be found at [touchcore.cs.mcgill.ca](http://touchcore.cs.mcgill.ca).
@@ -145,6 +144,10 @@ Once you loaded a model, you can navigate it to access its properties and childr
 You can either access them directly by calling `aspect.getMessageViews()` to retrieve the list.
 Or, you can request the message view for a specific operation by calling `RAMModelUtil.getMessageViewFor(Aspect, Operation)`.
 
+#### Calling a controller
+
+Use the `ca.mcgill.sel.ram.controller.ram.ControllerFactory` class to get the singleton instance of a controller.
+
 #### Initializing the GUI
 
 In addition to the initializing code provided above, the following is required to run the GUI of TouchCORE.
@@ -175,4 +178,3 @@ To access a handler for a view, use the `ca.mcgill.sel.ram.ui.views.message.hand
 [TouchCORE](http://touchcore.cs.mcgill.ca). is developed by the [Software Engineering Lab](http://www.cs.mcgill.ca/~joerg/SEL/SEL_Home.html) at the [School of Computer Science](http://cs.mcgill.ca), McGill University. It's predecessor was [TouchRAM](http://touchcore.cs.mcgill.ca/TouchRAM.html).
 
 TouchCORE is built using the [Eclipse Modeling Framework](http://www.eclipse.org/emf) for the backend and [Multitouch for Java (MT4j)](http://mt4j.org/) for the touch-based user interface.
-
