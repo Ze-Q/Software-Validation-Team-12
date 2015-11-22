@@ -74,7 +74,6 @@ public abstract class BaseHandler implements IGestureEventListener {
     @Override
     public boolean processGestureEvent(MTGestureEvent gestureEvent) {
         boolean eventProcessed = false;
-
         if (gestureEvent instanceof DragEvent && this instanceof IDragListener) {
             DragEvent dragEvent = (DragEvent) gestureEvent;
 
