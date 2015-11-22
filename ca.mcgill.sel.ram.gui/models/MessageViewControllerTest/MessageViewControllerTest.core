@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="ASCII"?>
+<core:COREConcern xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:core="http://cs.mcgill.ca/sel/core/2.0" xmlns:ram="http://cs.mcgill.ca/sel/ram/3.0" xmi:id="_14h1wJCrEeWSe9aqzgD1zQ" name="MessageViewControllerTest">
+  <models xsi:type="core:COREFeatureModel" href="#_14jD4JCrEeWSe9aqzgD1zQ"/>
+  <models xsi:type="ram:Aspect" href="CreateLifelineWithMessage.ram#_4CqVkJCsEeWSe9aqzgD1zQ"/>
+  <featureModel xmi:id="_14jD4JCrEeWSe9aqzgD1zQ" coreConcern="_14h1wJCrEeWSe9aqzgD1zQ" root="_14jD4ZCrEeWSe9aqzgD1zQ">
+    <features xmi:id="_14jD4ZCrEeWSe9aqzgD1zQ" name="MessageViewControllerTest"/>
+  </featureModel>
+</core:COREConcern>
