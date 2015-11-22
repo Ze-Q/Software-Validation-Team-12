@@ -155,7 +155,7 @@ public class MessageImpl extends EObjectImpl implements Message {
      * <!-- end-user-doc -->
      * @generated
      */
-    protected MessageImpl() {
+    public MessageImpl() {
         super();
     }
 

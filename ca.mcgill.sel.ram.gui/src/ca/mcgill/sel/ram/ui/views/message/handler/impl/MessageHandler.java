@@ -35,7 +35,7 @@ public class MessageHandler extends BaseHandler implements ITapAndHoldListener {
     /**
      * The options to display for a message call.
      */
-    private enum MessageOptions implements Iconified {
+    public enum MessageOptions implements Iconified {
         DELETE(new RamImageComponent(Icons.ICON_DELETE, Colors.ICON_DELETE_COLOR));
         
         private RamImageComponent icon;
@@ -100,7 +100,7 @@ public class MessageHandler extends BaseHandler implements ITapAndHoldListener {
      * @param message the message on whose view the event occurred
      * @return true, whether the event should be further processed, false otherwise
      */
-    private static boolean shouldProcessTapAndHold(Message message) {
+    protected static boolean shouldProcessTapAndHold(Message message) {
         if (!(message.getSendEvent() instanceof Gate)) {
             /**
              * Make sure that only those reply messages can be handled
