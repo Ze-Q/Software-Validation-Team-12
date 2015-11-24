@@ -92,20 +92,13 @@ public class TestMessageViewHandler {
             public void processSceneChangeEvent(SceneChangeEvent sc) {
                 if (sc.getNewScene() instanceof DisplayAspectScene) {
                     RamApp.getApplication().removeSceneChangeListener(this);
-                    waiter.resume();
+                    resumeTest();
                 }
             }
         });
         
         RamApp.getApplication().loadAspect(aspect);
-        
-        // Wait for UI to be updated.
-        try {
-            waiter.await();
-        } catch (Throwable e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
+        resumeTest();
     }
 
     @After
