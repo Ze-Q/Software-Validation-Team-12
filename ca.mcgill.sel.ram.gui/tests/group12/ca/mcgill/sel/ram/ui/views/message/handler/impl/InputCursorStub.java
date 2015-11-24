@@ -19,5 +19,28 @@ public class InputCursorStub extends InputCursor {
         return v1;
         
     }
+    
+    @Override
+    public float getCurrentEvtPosX()
+    {
+        return (float) 1.0;
+    }
+    
+    /**
+     * Gets the current events position y.
+     * 
+     * @return the current events position y
+     */
+    @Override
+    public float getCurrentEvtPosY()
+    {
+        return (float) 43;
+    }
+    
+    @Override
+    public Vector3D getPosition()
+    {
+        return new Vector3D(getCurrentEvtPosX(), getCurrentEvtPosY()); 
+    }
 
 }
