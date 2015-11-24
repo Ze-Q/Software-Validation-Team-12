@@ -71,11 +71,11 @@ public class TestMessageViewHandler2 {
     
     
     
-    public void cursorStarted(InputCursor inputCursor,AbstractCursorInputEvt currentEvent){
-        
-          context=new UnistrokeContext(pa,planeNormal,pointInPlane,inputCursor,recognizer,du,inputCursor.getTarget());
-        
-    }
+//    public void cursorStarted(InputCursor inputCursor,AbstractCursorInputEvt currentEvent){
+//        
+//          context=new UnistrokeContext(pa,planeNormal,pointInPlane,inputCursor,recognizer,du,inputCursor.getTarget());
+//        
+//    }
 
 
     @BeforeClass
