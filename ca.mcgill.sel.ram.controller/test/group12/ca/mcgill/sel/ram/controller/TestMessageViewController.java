@@ -39,7 +39,6 @@ import ca.mcgill.sel.ram.util.RamResourceFactoryImpl;
 public class TestMessageViewController {
     private static MessageViewController messageViewController;
     private static String modelFolder = "../ca.mcgill.sel.ram.gui/models/MessageViewControllerTest/";
-    // private static String modelBaseFolder = "../ca.mcgill.sel.ram.gui/models/demos/Bank/";
 
     /**
      * Before starting the tests, we must load all the required classes.
@@ -152,8 +151,6 @@ public class TestMessageViewController {
     	Classifier class1 = aspect.getStructuralView().getClasses().get(0);
         Operation foo2 = class1.getOperations().get(2);
  		MessageView messageView = RAMModelUtil.getMessageViewFor(aspect,foo2);
-
-        //MessageView messageView = (MessageView) aspect.getMessageViews().get(1);
         
         // set up the owner and life line
         Interaction owner = messageView.getSpecification();
@@ -168,8 +165,11 @@ public class TestMessageViewController {
         int addAtIndex = 0;
         
         int count = owner.getMessages().size();
+        
+        //make sure the condition !lifelineTo.getCoveredBy().contains(combinedFragment) is satisfied
+        assertEquals(false,lifelineTo.getCoveredBy().contains(combinedFragment)); 
+        
         messageViewController.createMessage(owner, lifelineFrom, lifelineTo, container, signature, addAtIndex);
-        assertEquals(false,lifelineTo.getCoveredBy().contains(combinedFragment));//number of messages should decrease by one
         assertEquals(count+1,owner.getMessages().size());//number of messages should increase by one
     }
     
@@ -182,14 +182,12 @@ public class TestMessageViewController {
         Classifier class1 = aspect.getStructuralView().getClasses().get(0);
         Operation foo2 = class1.getOperations().get(2);
 		MessageView messageView = RAMModelUtil.getMessageViewFor(aspect,foo2);
-
-        //MessageView messageView = (MessageView) aspect.getMessageViews().get(1);
         
         // set up the owner and life line
         Interaction owner = messageView.getSpecification();
         EList<Lifeline> lifelines = owner.getLifelines();
         Lifeline lifelineFrom = lifelines.get(0);
-        Lifeline lifelineTo = lifelines.get(1);
+        Lifeline lifelineTo = lifelineFrom;
         CombinedFragment combinedFragment = (CombinedFragment) owner.getFragments().get(5);
         FragmentContainer container = combinedFragment.getOperands().get(0);
         Operation signature = aspect.getStructuralView()
@@ -198,8 +196,11 @@ public class TestMessageViewController {
         int addAtIndex = 0;
         
         int count = owner.getMessages().size();
+        
+        //make sure the condition !lifelineTo.getCoveredBy().contains(combinedFragment) is not satisfied
+        assertEquals(true,lifelineTo.getCoveredBy().contains(combinedFragment));
+        
         messageViewController.createMessage(owner, lifelineFrom, lifelineTo, container, signature, addAtIndex);
-        assertEquals(true,lifelineTo.getCoveredBy().contains(combinedFragment));//number of messages should decrease by one
         assertEquals(count+1,owner.getMessages().size());//number of messages should increase by one
     }
     
