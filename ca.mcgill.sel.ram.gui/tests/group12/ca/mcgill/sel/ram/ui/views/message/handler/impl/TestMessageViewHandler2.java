@@ -165,6 +165,22 @@ public class TestMessageViewHandler2 {
 //        app.dispatchEvent(new MouseEvent(app, MouseEvent.MOUSE_RELEASED, 0, MouseEvent.BUTTON1_MASK, x, y, x, y, 1, false, MouseEvent.BUTTON1));
     }
     
+    /* A few basic tests first, then onto branch testing.
+     *
+     * Specifically, the branches to be tested are the following:
+     * 
+     * 67 -t-> 125 --> exit
+     * 67 -f-> 69 -f-> 125 --> exit
+     * 67 -f-> 69 -t-> 76 -f-> 125 --> exit
+     * 67 -f-> 69 -t-> 76 -t-> 79 -t-> 125 --> exit
+     * 67 -f-> 69 -t-> 76 -t-> 79 -f-> 81 -f-> 125 --> exit
+     * 67 -f-> 69 -t-> 76 -t-> 79 -f-> 81 -t-> 97 -f-> 125 --> exit
+     * 67 -f-> 69 -t-> 76 -t-> 79 -f-> 81 -t-> 97 -f-> 125 --> exit
+     * 67 -f-> 69 -t-> 76 -t-> 79 -f-> 81 -t-> 97 -t-> 125 --> exit
+     *
+     */
+    
+    
     /**
      * @author yazami (Yahya Azami)
      */
@@ -246,16 +262,19 @@ public class TestMessageViewHandler2 {
         
     }
     
-    /**
-     * @author yazami (Yahya Azami)
-     */
-    @Test
-    public void findLifelineViewLine138()
-    {
-        RamFactoryImpl ramfactory = (RamFactoryImpl) RamFactoryImpl.init();
-        Lifeline lifeline = ramfactory.createLifeline();
-        
-    }
+    
+    
+    
+//    /**
+//     * @author yazami (Yahya Azami)
+//     */
+//    @Test
+//    public void findLifelineViewLine138()
+//    {
+//        RamFactoryImpl ramfactory = (RamFactoryImpl) RamFactoryImpl.init();
+//        Lifeline lifeline = ramfactory.createLifeline();
+//        
+//    }
    
     
       /*
