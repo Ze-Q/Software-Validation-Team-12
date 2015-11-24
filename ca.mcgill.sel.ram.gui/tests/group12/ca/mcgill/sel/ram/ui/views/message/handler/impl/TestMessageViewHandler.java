@@ -30,16 +30,17 @@ import ca.mcgill.sel.ram.ui.RamApp;
 import ca.mcgill.sel.ram.ui.scenes.DisplayAspectScene;
 import ca.mcgill.sel.ram.ui.views.message.LifelineView;
 import ca.mcgill.sel.ram.ui.views.message.MessageViewView;
+import ca.mcgill.sel.ram.ui.views.message.handler.MessageViewHandlerFactory;
+import ca.mcgill.sel.ram.ui.views.message.handler.impl.MessageViewHandler;
 import ca.mcgill.sel.ram.util.RamResourceFactoryImpl;
 
 public class TestMessageViewHandler {
     
     private static Waiter waiter = new Waiter();
-    
     private static Aspect aspect;
-    
-    private static String modelsFolder = "../ca.mcgill.sel.ram.gui/models/demos/Bank_completed/";
-
+    private static String aspectLocation = "../ca.mcgill.sel.ram.gui/models/demos/Bank_completed/";
+    private static boolean shouldContinue;
+    private static MessageViewHandler mvHandler;
 
     @BeforeClass
     public static void setUpBeforeClass() throws Exception {
@@ -58,17 +59,12 @@ public class TestMessageViewHandler {
             
             @Override
             public void run() {
-                waiter.resume();
+                resumeTest();
             }
         });
         
-        // Wait for RamApp to be initialized.
-        try {
-            waiter.await();
-        } catch (Throwable e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
+        pauseTest();
+        mvHandler = (MessageViewHandler) MessageViewHandlerFactory.INSTANCE.getMessageViewHandler();
     }
 
     @AfterClass
@@ -88,7 +84,7 @@ public class TestMessageViewHandler {
         }
         
         // Load model to use in test.
-        aspect = (Aspect) ResourceManager.loadModel(modelsFolder + "Transfer.ram");
+        aspect = (Aspect) ResourceManager.loadModel(aspectLocation + "Transfer.ram");
         
         RamApp.getApplication().addSceneChangeListener(new ISceneChangeListener() {
             
@@ -99,8 +95,6 @@ public class TestMessageViewHandler {
                     waiter.resume();
                 }
             }
-
-            
         });
         
         RamApp.getApplication().loadAspect(aspect);
@@ -136,8 +130,6 @@ public class TestMessageViewHandler {
         MessageViewView msgViewView = new MessageViewView(msgview, layout, 1024, 768);
         
         Lifeline lifeline = ramfactory.createLifeline();
-        
-//        LayoutElement layoutElement = layout.getValue().get(lifeline);
         LayoutElement layoutElement = ramfactory.createLayoutElement();
         Vector3D location = new Vector3D(layoutElement.getX(), layoutElement.getY());
         LifelineView lifeLineView = new LifelineView(msgViewView, lifeline, layoutElement);
@@ -145,6 +137,33 @@ public class TestMessageViewHandler {
         
         msgViewView.getHandler().handleCreateFragment(msgViewView, lifeLineView, location, fragContainer);
         
+    }
+    
+    /*
+     * Pause test case
+     */
+    private static void pauseTest() {
+    	synchronized (waiter) {
+            while (!shouldContinue) {
+                try {
+					waiter.wait();
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+            }
+            shouldContinue = false;
+        }
+    }
+    
+    /*
+     * Resume test case
+     */
+    private static void resumeTest() {
+    	synchronized (waiter) {
+            waiter.notify();
+            shouldContinue = true;
+        }
     }
 
 }
