@@ -50,24 +50,24 @@ public class TestMessageViewHandler2 {
     private static String modelsFolder = "../ca.mcgill.sel.ram.gui/models/demos/Bank_completed/";
     
     
-    //Special attributes
-    /** The pa. */
-    private PApplet pa;
-    /** The plane normal. */
-    private Vector3D planeNormal;
-    /** The point in plane. */
-    private Vector3D pointInPlane;
-    
-    
-    /** The context. */
-    private UnistrokeContext context;
-    
-    /** The recognizer. */
-    private Recognizer recognizer;
-    
-    /** The du. */
-    private UnistrokeUtils du;
-    //End Special attributes
+//    //Special attributes
+//    /** The pa. */
+//    private PApplet pa;
+//    /** The plane normal. */
+//    private Vector3D planeNormal;
+//    /** The point in plane. */
+//    private Vector3D pointInPlane;
+//    
+//    
+//    /** The context. */
+//    private UnistrokeContext context;
+//    
+//    /** The recognizer. */
+//    private Recognizer recognizer;
+//    
+//    /** The du. */
+//    private UnistrokeUtils du;
+//    //End Special attributes
     
     
     
@@ -165,18 +165,20 @@ public class TestMessageViewHandler2 {
 //        app.dispatchEvent(new MouseEvent(app, MouseEvent.MOUSE_RELEASED, 0, MouseEvent.BUTTON1_MASK, x, y, x, y, 1, false, MouseEvent.BUTTON1));
     }
     
-    /* A few basic tests first, then onto branch testing.
+    /* 
+     *
+     * A few basic tests first, then onto branch testing.
      *
      * Specifically, the branches to be tested are the following:
      * 
-     * 67 -t-> 125 --> exit
-     * 67 -f-> 69 -f-> 125 --> exit
-     * 67 -f-> 69 -t-> 76 -f-> 125 --> exit
-     * 67 -f-> 69 -t-> 76 -t-> 79 -t-> 125 --> exit
-     * 67 -f-> 69 -t-> 76 -t-> 79 -f-> 81 -f-> 125 --> exit
-     * 67 -f-> 69 -t-> 76 -t-> 79 -f-> 81 -t-> 97 -f-> 125 --> exit
-     * 67 -f-> 69 -t-> 76 -t-> 79 -f-> 81 -t-> 97 -f-> 125 --> exit
-     * 67 -f-> 69 -t-> 76 -t-> 79 -f-> 81 -t-> 97 -t-> 125 --> exit
+     * Branch 1: 67 -t-> 125 --> exit
+     * Branch 2: 67 -f-> 69 -f-> 125 --> exit
+     * Branch 3: 67 -f-> 69 -t-> 76 -f-> 125 --> exit
+     * Branch 4: 67 -f-> 69 -t-> 76 -t-> 79 -t-> 125 --> exit
+     * Branch 5: 67 -f-> 69 -t-> 76 -t-> 79 -f-> 81 -f-> 125 --> exit
+     * Branch 6: 67 -f-> 69 -t-> 76 -t-> 79 -f-> 81 -t-> 97 -f-> 125 --> exit
+     * Branch 7: 67 -f-> 69 -t-> 76 -t-> 79 -f-> 81 -t-> 97 -f-> 125 --> exit
+     * 
      *
      */
     
@@ -262,7 +264,96 @@ public class TestMessageViewHandler2 {
         
     }
     
+    /**
+     * @author yazami (Yahya Azami)
+     * Branch 1: 67 -t-> 125 --> exit
+     */
+    @Test
+    public void testProcessUnistrokeEventBranch1()
+    {
+        InputCursor inputCursor =  new InputCursorStub();
+        
+        UnistrokeEvent uni = new UnistrokeEvent(null, MTGestureEvent.GESTURE_STARTED, inputCursor.getTarget(),
+                null, UnistrokeGesture.NOGESTURE, inputCursor);
+        
+        int gestureID = uni.getId();
+
+        
+        //Assuming the gesture has started, gestureID should be equal to MTGestureEvent.GESTURE_STARTED
+        //which is 0.
+        assertEquals(0, gestureID);
+    }
     
+    
+    /**
+     * @author yazami
+     * Branch 2: 67 -f-> 69 -f-> 125 --> exit
+     */
+    @Test
+    public void testProcessUnistrokeEventBranch2Part1()
+    {
+        InputCursor inputCursor =  new InputCursorStub();
+        
+        UnistrokeEvent uni = new UnistrokeEvent(null, MTGestureEvent.GESTURE_UPDATED, inputCursor.getTarget(),
+                null, UnistrokeGesture.NOGESTURE, inputCursor);
+        
+        int gestureID = uni.getId();
+        assertNotEquals(0, gestureID);
+        assertEquals(1, gestureID);
+        
+    }
+    
+    /**
+     * @author yazami (Yahya Azami)
+     * Branch 2:67 -f-> 69 -f-> 125 --> exit
+     * 
+     * Testing here the second part of the condition
+     */
+    @Test
+    public void testProcessUnistrokeEventBranch2Part2()
+    {
+        InputCursor inputCursor =  new InputCursorStub();
+        
+        UnistrokeEvent uni = new UnistrokeEvent(null, MTGestureEvent.GESTURE_ENDED, inputCursor.getTarget(),
+                null, UnistrokeGesture.NOGESTURE, inputCursor);
+        
+        int gestureID = uni.getId();
+        assertNotEquals(0, gestureID);
+        assertEquals(2, gestureID);
+    }
+    
+    /**
+     * @author yazami (Yahya Azami)
+     * Branch 3: 67 -f-> 69 -t-> 76 -f-> 125 --> exit
+     */
+    public void testProcessUnistrokeEventBranch3()
+    {
+        InputCursor inputCursor =  new InputCursorStub();
+        
+        UnistrokeEvent uni = new UnistrokeEvent(null, MTGestureEvent.GESTURE_UPDATED, inputCursor.getTarget(),
+                null, UnistrokeGesture.NOGESTURE, inputCursor);
+        
+        int gestureID = uni.getId();
+        assertNotEquals(0, gestureID);
+        assertEquals(1, gestureID);
+        
+        Vector3D startPosition = uni.getCursor().getStartPosition();
+        
+        //Trying to set the cursor position here. Fro branch 3, distance shouldn't be 0...
+        //uni.getCursor().
+        Vector3D endPosition = uni.getCursor().getStartPosition();
+        float distance = startPosition.distance(endPosition);
+        assertTrue(0.0==distance);
+        
+    }
+    
+    /**
+     * @author yazami (Yahya Azami)
+     */
+    public void testProcessUnistrokeEventBranch4()
+    {
+        
+    }
     
     
 //    /**
