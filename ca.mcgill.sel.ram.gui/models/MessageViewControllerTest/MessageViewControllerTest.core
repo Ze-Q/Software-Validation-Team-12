@@ -3,6 +3,8 @@
   <models xsi:type="core:COREFeatureModel" href="#_14jD4JCrEeWSe9aqzgD1zQ"/>
   <models xsi:type="ram:Aspect" href="CreateLifelineWithMessage.ram#_4CqVkJCsEeWSe9aqzgD1zQ"/>
   <models xsi:type="ram:Aspect" href="CreateLifelineWithMessageV2.ram#_8C06UJGnEeWeV_u8iNP1Ag"/>
+  <models xsi:type="ram:Aspect" href="CreateLifelineWithMessageV3.ram#_C91cAJJVEeWvSqKOu1uSNw"/>
+  <models xsi:type="ram:Aspect" href="CreateLifelineWithMessageV4.ram#_3qjAgJJtEeW3FvbFGQ5tow"/>
   <featureModel xmi:id="_14jD4JCrEeWSe9aqzgD1zQ" coreConcern="_14h1wJCrEeWSe9aqzgD1zQ" root="_14jD4ZCrEeWSe9aqzgD1zQ">
     <features xmi:id="_14jD4ZCrEeWSe9aqzgD1zQ" name="MessageViewControllerTest"/>
   </featureModel>
