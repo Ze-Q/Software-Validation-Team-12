@@ -4,8 +4,6 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 
 import org.eclipse.emf.common.util.EList;
-import org.eclipse.emf.common.util.EMap;
-import org.eclipse.emf.ecore.EObject;
 import org.junit.BeforeClass;
 
 import ca.mcgill.sel.commons.emf.util.AdapterFactoryRegistry;
@@ -22,11 +20,12 @@ import ca.mcgill.sel.ram.MessageOccurrenceSpecification;
 import ca.mcgill.sel.ram.MessageView;
 import ca.mcgill.sel.ram.Operation;
 import ca.mcgill.sel.ram.OperationType;
+import ca.mcgill.sel.ram.RamFactory;
 import ca.mcgill.sel.ram.RamPackage;
+import ca.mcgill.sel.ram.Reference;
 import ca.mcgill.sel.ram.TypedElement;
 import ca.mcgill.sel.ram.controller.ControllerFactory;
 import ca.mcgill.sel.ram.controller.MessageViewController;
-import ca.mcgill.sel.ram.impl.MessageOccurrenceSpecificationImpl;
 import ca.mcgill.sel.ram.provider.RamItemProviderAdapterFactory;
 import ca.mcgill.sel.ram.util.RAMModelUtil;
 import ca.mcgill.sel.ram.util.RamResourceFactoryImpl;
@@ -69,14 +68,26 @@ public class TestMessageViewController {
 
         // set up the owner and life line
         Interaction owner = messageView.getSpecification();
+        
+        //get the number of lifelines before creating new lifeline
         int count = owner.getLifelines().size();
-
+        
+        //set up typed element
         TypedElement represents = (TypedElement) aspect.getStructuralView()
                 .getClasses().get(0)
                 .getAssociationEnds().get(0);
         
         messageViewController.createLifeline(owner, represents, 10, 10);
+    
+        Lifeline newLifeline = owner.getLifelines().get(count);//get the lifeline that we just created
+        LayoutElement lifelineLayout = aspect.getLayout().getContainers().get(messageView).get(newLifeline);
+        
         assertEquals("Error creating lifeline",count+1,owner.getLifelines().size());//number of lifelines should increase by one
+        assertNotNull("New lifeline null", newLifeline);// new lifeline should not be null
+        
+        //test x and y coordinates of the new lifeline
+        assertEquals("Incorrect x coordinate of the new lifeline",10f, lifelineLayout.getX(), Float.MIN_VALUE);
+        assertEquals("Incorrect y coordinate of the new lifeline",10f, lifelineLayout.getY(), Float.MIN_VALUE);
     }
 
     /**
@@ -91,7 +102,17 @@ public class TestMessageViewController {
         // set up the owner and life line
         Interaction owner = messageView.getSpecification();
         Lifeline lifeline = owner.getLifelines().get(0);
-        messageViewController.moveLifeline(lifeline, 10, 10);
+        LayoutElement lifelineLayout = aspect.getLayout().getContainers().get(messageView).get(lifeline);
+        
+        float x = lifelineLayout.getX()-10;// new x-coordinate of the lifeline
+        float y = lifelineLayout.getY()-10;// new y-coordinate of the lifeline
+        
+        messageViewController.moveLifeline(lifeline, x, y);
+
+        
+        //test new x and y coordinates of the the lifeline
+        assertEquals("Incorrect x coordinate of the lifeline",x, lifelineLayout.getX(), Float.MIN_VALUE);
+        assertEquals("Incorrect y coordinate of the lifeline",y, lifelineLayout.getY(), Float.MIN_VALUE);
     }
     
     /**
@@ -109,13 +130,17 @@ public class TestMessageViewController {
         Lifeline lifelineFrom = lifelines.get(0);
         Lifeline lifelineTo = lifelines.get(1);
         
+        //set up container and signature
         FragmentContainer container = owner;
         Operation signature = aspect.getStructuralView()
                 .getClasses().get(1)
                 .getOperations().get(0);
+        
         int addAtIndex = 1;
         
+        //get number of messages before creating reply message
         int count = owner.getMessages().size();
+        
         messageViewController.createReplyMessage(owner, lifelineFrom, lifelineTo, container, signature, addAtIndex);
         assertEquals("Error creating reply message", count+1,owner.getMessages().size());//number of messages should increase by one
     }
@@ -132,11 +157,14 @@ public class TestMessageViewController {
         // set up the owner and life line
         Interaction owner = messageView.getSpecification();
         FragmentContainer container = owner;
-
+        
+        //set up the message to be deleted
         Message message = owner.getMessages().get(1);
         MessageOccurrenceSpecification sendEvent = (MessageOccurrenceSpecification) message.getSendEvent();
         
+        //get the number of messages before deleting
         int count = owner.getMessages().size();
+   
         messageViewController.removeMessages(owner, container, sendEvent);
         assertEquals("Error removing message", count-1,owner.getMessages().size());//number of messages should decrease by one
         
@@ -148,23 +176,25 @@ public class TestMessageViewController {
     @Test
     public void testCreateMessageTestCase1() {
     	Aspect aspect = (Aspect) ResourceManager.loadModel(modelFolder + "CreateLifelineWithMessageV2.ram");
-    	Classifier class1 = aspect.getStructuralView().getClasses().get(0);
-        Operation foo2 = class1.getOperations().get(2);
- 		MessageView messageView = RAMModelUtil.getMessageViewFor(aspect,foo2);
+ 		MessageView messageView = RAMModelUtil.getMessageViewFor(aspect,aspect.getStructuralView().getClasses().get(0).getOperations().get(2));
         
         // set up the owner and life line
         Interaction owner = messageView.getSpecification();
         EList<Lifeline> lifelines = owner.getLifelines();
+        
+        //get the number of lifelines before creating new lifeline
+        int count = owner.getMessages().size();
+        
         Lifeline lifelineFrom = lifelines.get(0);
         Lifeline lifelineTo = lifelines.get(1);
+        
+        //set container != owner
         CombinedFragment combinedFragment = (CombinedFragment) owner.getFragments().get(5);
         FragmentContainer container = combinedFragment.getOperands().get(0);
         Operation signature = aspect.getStructuralView()
                 .getClasses().get(1)
                 .getOperations().get(0);
         int addAtIndex = 0;
-        
-        int count = owner.getMessages().size();
         
         //make sure the condition !lifelineTo.getCoveredBy().contains(combinedFragment) is satisfied
         assertEquals(false,lifelineTo.getCoveredBy().contains(combinedFragment)); 
@@ -179,23 +209,24 @@ public class TestMessageViewController {
     @Test
     public void testCreateMessageTestCase2() {
     	Aspect aspect = (Aspect) ResourceManager.loadModel(modelFolder + "CreateLifelineWithMessageV2.ram");
-        Classifier class1 = aspect.getStructuralView().getClasses().get(0);
-        Operation foo2 = class1.getOperations().get(2);
-		MessageView messageView = RAMModelUtil.getMessageViewFor(aspect,foo2);
+		MessageView messageView = RAMModelUtil.getMessageViewFor(aspect,aspect.getStructuralView().getClasses().get(0).getOperations().get(2));
         
         // set up the owner and life line
         Interaction owner = messageView.getSpecification();
         EList<Lifeline> lifelines = owner.getLifelines();
         Lifeline lifelineFrom = lifelines.get(0);
         Lifeline lifelineTo = lifelineFrom;
+        
+        //get the number of lifelines before creating new lifeline
+        int count = owner.getMessages().size();
+        
+        //set container != owner
         CombinedFragment combinedFragment = (CombinedFragment) owner.getFragments().get(5);
         FragmentContainer container = combinedFragment.getOperands().get(0);
         Operation signature = aspect.getStructuralView()
                 .getClasses().get(1)
                 .getOperations().get(0);
         int addAtIndex = 0;
-        
-        int count = owner.getMessages().size();
         
         //make sure the condition !lifelineTo.getCoveredBy().contains(combinedFragment) is not satisfied
         assertEquals(true,lifelineTo.getCoveredBy().contains(combinedFragment));
@@ -215,15 +246,20 @@ public class TestMessageViewController {
         // set up the owner and life line
         Interaction owner = messageView.getSpecification();
         EList<Lifeline> lifelines = owner.getLifelines();
+        
+        //get the number of lifelines before creating new lifeline
+        int count = owner.getMessages().size();
+        
         Lifeline lifelineFrom = lifelines.get(0);
         Lifeline lifelineTo = lifelines.get(1);
+        
+        //set container = owner
         FragmentContainer container = owner;
         Operation signature = aspect.getStructuralView()
                 .getClasses().get(1)
                 .getOperations().get(0);
         int addAtIndex = 0;
         
-        int count = owner.getMessages().size();
         messageViewController.createMessage(owner, lifelineFrom, lifelineTo, container, signature, addAtIndex);
         assertEquals(count+1,owner.getMessages().size());//number of messages should increase by one
     }
@@ -234,40 +270,97 @@ public class TestMessageViewController {
     @Test
     public void testCreateLifelineWithMessageTestCase1() {
     	Aspect aspect = (Aspect) ResourceManager.loadModel(modelFolder + "CreateLifelineWithMessageV2.ram");
-        Classifier class1 = aspect.getStructuralView().getClasses().get(0);
-        Operation foo2 = class1.getOperations().get(2);
-		MessageView messageView = RAMModelUtil.getMessageViewFor(aspect,foo2);
+        Classifier class3 = aspect.getStructuralView().getClasses().get(2);
+ 
+        
+		MessageView messageView = RAMModelUtil.getMessageViewFor(aspect, aspect.getStructuralView().getClasses().get(0).getOperations().get(3));
+		Reference class3ReferenceType = RamFactory.eINSTANCE.createReference();
+		class3ReferenceType.setType(class3);
         
         // set up the owner and life line
         int addAtIndex = 0;
         Interaction owner = messageView.getSpecification();
         EList<Lifeline> lifelines = owner.getLifelines();
         Lifeline lifelineFrom = lifelines.get(0);
-        Lifeline lifelineTo = lifelines.get(1);
-        CombinedFragment combinedFragment = (CombinedFragment) owner.getFragments().get(5);
+        
+        //get number of lifelines and messages before creating
+        int lifelineCount = owner.getLifelines().size();
+        int messageCount = owner.getMessages().size();
+        
+        //set container != owner
+        CombinedFragment combinedFragment = (CombinedFragment) owner.getFragments().get(2);
+        FragmentContainer container = combinedFragment.getOperands().get(0);
+        
+        Operation signature = aspect.getStructuralView()
+                .getClasses().get(1)
+                .getOperations().get(0);  
+        
+        //set signature.getOperationType() == OperationType.NORMAL
+        signature.setOperationType(OperationType.NORMAL);
+        
+        TypedElement represents = (TypedElement) aspect.getStructuralView()
+                .getClasses().get(0)
+                .getAssociationEnds().get(0);
+        
+        assertEquals(OperationType.NORMAL,signature.getOperationType());// operation type should be NORMAL
+        
+        messageViewController.createLifelineWithMessage(owner,represents,10,10,lifelineFrom,container,signature,addAtIndex);
+        
+        Lifeline newLifeline = lifelines.get(lifelineCount);//get the newly created lifeline
+        LayoutElement lifelineLayout = aspect.getLayout().getContainers().get(messageView).get(newLifeline);
+        
+        assertNotNull("New lifeline is null", newLifeline);// new lifeline should not be null
+        assertEquals("Error creating new lifeline",lifelineCount + 1, owner.getLifelines().size());// number of lifelines should increase by one
+        assertEquals("error creating new message", messageCount + 1, owner.getMessages().size());// number of messages should increase by one
+        
+        //test x and y coordinates of the the lifeline
+        assertEquals("Incorrect x coordinate of new lifeline",10f, lifelineLayout.getX(), Float.MIN_VALUE);
+        assertEquals("Incorrect y coordinate of new lifeline",10f, lifelineLayout.getY(), Float.MIN_VALUE);
+    }
+    /**
+     * Test the path 2: 95-101-103-112-121-133-137-159-162-163-172 through the method createMessageWithMessage.
+     */
+    @Test
+    public void testCreateLifelineWithMessageTestCase2() {
+        Aspect aspect = (Aspect) ResourceManager.loadModel(modelFolder + "CreateLifelineWithMessageV2.ram");
+        Classifier class3 = aspect.getStructuralView().getClasses().get(2);
+        MessageView messageView = RAMModelUtil.getMessageViewFor(aspect,aspect.getStructuralView().getClasses().get(0).getOperations().get(3));
+        Reference class3ReferenceType = RamFactory.eINSTANCE.createReference();
+        class3ReferenceType.setType(class3);
+        
+        // set up the owner and life line
+        int addAtIndex = 1;
+        Interaction owner = messageView.getSpecification();
+        EList<Lifeline> lifelines = owner.getLifelines();
+        Lifeline lifelineFrom = lifelines.get(0);
+        
+       //get number of lifelines and messages before creating
+        int lifelineCount = owner.getLifelines().size();
+        int messageCount = owner.getMessages().size();
+        
+        //set container != owner
+        CombinedFragment combinedFragment = (CombinedFragment) owner.getFragments().get(2);
         FragmentContainer container = combinedFragment.getOperands().get(0);
         Operation signature = aspect.getStructuralView()
                 .getClasses().get(1)
                 .getOperations().get(0);  
-        signature.setOperationType(OperationType.NORMAL);
+
         TypedElement represents = (TypedElement) aspect.getStructuralView()
                 .getClasses().get(0)
                 .getAssociationEnds().get(0);
-              
-        int count = owner.getLifelines().size();
         
         messageViewController.createLifelineWithMessage(owner,represents,10,10,lifelineFrom,container,signature,addAtIndex);
         
-        Lifeline newLifeline = lifelines.get(1);
-        String className = newLifeline.getRepresents().getName();
-
-        //test lifeline class name
-        assertNotNull("Error creating lifeline", newLifeline);
-        assertEquals("Error creating lifeline",count+1,owner.getLifelines().size());//number of lifelines should increase by one
-        assertEquals(OperationType.NORMAL,signature.getOperationType());//number of messages should decrease by one
-        assertEquals(false,lifelineTo.getCoveredBy().contains(combinedFragment));//number of messages should decrease by one
-        assertNull("Error creating lifeline", represents.eContainer());
-        assertNull(RAMModelUtil.findInitialMessage(container.getFragments().get(addAtIndex)));
+        Lifeline newLifeline = lifelines.get(lifelineCount);//get the newly created lifeline
+        LayoutElement lifelineLayout = aspect.getLayout().getContainers().get(messageView).get(newLifeline);
+        
+        assertNotNull("New lifeline is null", newLifeline);// new lifeline should not be null
+        assertEquals("Error creating new lifeline",lifelineCount + 1, owner.getLifelines().size());// number of lifelines should increase by one
+        assertEquals("error creating new message", messageCount + 1, owner.getMessages().size());// number of messages should increase by one
+        
+        //test x and y coordinates of the the lifeline
+        assertEquals("Incorrect x coordinate of new lifeline",10f, lifelineLayout.getX(), Float.MIN_VALUE);
+        assertEquals("Incorrect y coordinate of new lifeline",10f, lifelineLayout.getY(), Float.MIN_VALUE);
         
     }
     
@@ -276,37 +369,42 @@ public class TestMessageViewController {
      */
     @Test
     public void testCreateLifelineWithMessageTestCase3() {
-        Aspect aspect = (Aspect) ResourceManager.loadModel(modelFolder + "CreateLifelineWithMessageV4.ram");
-        MessageView messageView = (MessageView) aspect.getMessageViews().get(0);
+        Aspect aspect = (Aspect) ResourceManager.loadModel(modelFolder + "CreateLifelineWithMessageV2.ram");
+        MessageView messageView = RAMModelUtil.getMessageViewFor(aspect,aspect.getStructuralView().getClasses().get(0).getOperations().get(4));
         
         // set up the owner and life line
         int addAtIndex = 1;
         Interaction owner = messageView.getSpecification();
         EList<Lifeline> lifelines = owner.getLifelines();
         Lifeline lifelineFrom = lifelines.get(0);
+        
+        //get number of lifelines and messages before creating
+        int lifelineCount = owner.getLifelines().size();
+        int messageCount = owner.getMessages().size();
+        
         TypedElement represents = (TypedElement) aspect.getStructuralView()
                 .getClasses().get(0)
                 .getAssociationEnds().get(0);
         
+        //set container = owner
         FragmentContainer container = owner;
         
         Operation signature = aspect.getStructuralView()
                 .getClasses().get(0)
                 .getOperations().get(0);
-        //signature.setOperationType(OperationType.CONSTRUCTOR);
-        int count = owner.getLifelines().size();
         
         messageViewController.createLifelineWithMessage(owner,represents,10,10,lifelineFrom,container,signature,addAtIndex);
         
-        Lifeline newLifeline = lifelines.get(1);
-        String className = newLifeline.getRepresents().getName();
-
-        //test lifeline class name
-        assertNotNull("Error creating lifeline", newLifeline);
-        assertEquals("Error Lifeline class name", "myClass2", className);
-        assertEquals("Error creating lifeline",count+1,owner.getLifelines().size());//number of lifelines should increase by one
-        assertEquals("Error creating lifeline",0,container.getFragments().size());
+        Lifeline newLifeline = lifelines.get(lifelineCount);//get the newly created lifeline
+        LayoutElement lifelineLayout = aspect.getLayout().getContainers().get(messageView).get(newLifeline);
         
+        assertNotNull("New lifeline is null", newLifeline);// new lifeline should not be null
+        assertEquals("Error creating new lifeline",lifelineCount + 1, owner.getLifelines().size());// number of lifelines should increase by one
+        assertEquals("error creating new message", messageCount + 1, owner.getMessages().size());// number of messages should increase by one
+        
+        //test x and y coordinates of the the lifeline
+        assertEquals("Incorrect x coordinate of new lifeline",10f, lifelineLayout.getX(), Float.MIN_VALUE);
+        assertEquals("Incorrect y coordinate of new lifeline",10f, lifelineLayout.getY(), Float.MIN_VALUE);
     }
     
     
