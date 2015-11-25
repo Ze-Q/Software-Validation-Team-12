@@ -38,6 +38,8 @@ import ca.mcgill.sel.ram.util.RamResourceFactoryImpl;
  */
 public class TestMessageViewController {
     private static MessageViewController messageViewController;
+
+    // this directory contains models that are needed for the tests
     private static String modelFolder = "../ca.mcgill.sel.ram.gui/models/MessageViewControllerTest/";
 
     /**
@@ -67,7 +69,7 @@ public class TestMessageViewController {
         Aspect aspect = (Aspect) ResourceManager.loadModel(modelFolder + "CreateLifelineWithMessage.ram");
         MessageView messageView = (MessageView) aspect.getMessageViews().get(0);
 
-        // set up the owner and life line
+        // set up the owner
         Interaction owner = messageView.getSpecification();
 
         // get the number of lifelines before creating new lifeline
@@ -216,7 +218,7 @@ public class TestMessageViewController {
         MessageView messageView = RAMModelUtil.getMessageViewFor(aspect,
                 aspect.getStructuralView().getClasses().get(0).getOperations().get(2));
 
-        // set up the owner and life line
+        // set up the owner and life lines
         Interaction owner = messageView.getSpecification();
         EList<Lifeline> lifelines = owner.getLifelines();
         Lifeline lifelineFrom = lifelines.get(0);
@@ -300,7 +302,7 @@ public class TestMessageViewController {
                 .getClasses().get(1)
                 .getOperations().get(0);
 
-        // set signature.getOperationType() == OperationType.NORMAL
+        // make sure signature.getOperationType() == OperationType.NORMAL
         signature.setOperationType(OperationType.NORMAL);
 
         TypedElement represents = (TypedElement) aspect.getStructuralView()
@@ -309,6 +311,7 @@ public class TestMessageViewController {
 
         assertEquals(OperationType.NORMAL, signature.getOperationType());// operation type should be NORMAL
 
+        // exercise the method
         messageViewController.createLifelineWithMessage(owner, represents, 10, 10, lifelineFrom, container, signature,
                 addAtIndex);
 
@@ -361,6 +364,7 @@ public class TestMessageViewController {
                 .getClasses().get(0)
                 .getAssociationEnds().get(0);
 
+        // exercise the method
         messageViewController.createLifelineWithMessage(owner, represents, 10, 10, lifelineFrom, container, signature,
                 addAtIndex);
 
@@ -411,6 +415,7 @@ public class TestMessageViewController {
                 .getClasses().get(0)
                 .getOperations().get(0);
 
+        // exercise the method
         messageViewController.createLifelineWithMessage(owner, represents, 10, 10, lifelineFrom, container, signature,
                 addAtIndex);
 
