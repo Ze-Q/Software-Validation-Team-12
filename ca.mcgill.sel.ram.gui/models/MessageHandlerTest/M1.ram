@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="ASCII"?>
+<ram:Aspect xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ram="http://cs.mcgill.ca/sel/ram/3.0" xmi:id="_O42bAJOeEeWFCpGLRMUK-Q" name="M1">
+  <coreConcern href="MessageHandlerTest.core#_I-vNAJOeEeWFCpGLRMUK-Q"/>
+  <structuralView xmi:id="_O42bAZOeEeWFCpGLRMUK-Q">
+    <classes xsi:type="ram:Class" xmi:id="_O42bApOeEeWFCpGLRMUK-Q" name="C1" visibility="public">
+      <operations xmi:id="_O42bA5OeEeWFCpGLRMUK-Q" name="create" visibility="public" returnType="_O42bApOeEeWFCpGLRMUK-Q" operationType="Constructor"/>
+      <operations xmi:id="_O42bBJOeEeWFCpGLRMUK-Q" name="destroy" visibility="public" returnType="_O42bBZOeEeWFCpGLRMUK-Q" operationType="Destructor"/>
+    </classes>
+    <types xsi:type="ram:RVoid" xmi:id="_O42bBZOeEeWFCpGLRMUK-Q"/>
+    <types xsi:type="ram:RAny" xmi:id="_O42bBpOeEeWFCpGLRMUK-Q"/>
+    <types xsi:type="ram:RBoolean" xmi:id="_O42bB5OeEeWFCpGLRMUK-Q"/>
+    <types xsi:type="ram:RInt" xmi:id="_O42bCJOeEeWFCpGLRMUK-Q"/>
+    <types xsi:type="ram:RChar" xmi:id="_O42bCZOeEeWFCpGLRMUK-Q"/>
+    <types xsi:type="ram:RString" xmi:id="_O42bCpOeEeWFCpGLRMUK-Q"/>
+    <types xsi:type="ram:RDouble" xmi:id="_O42bC5OeEeWFCpGLRMUK-Q"/>
+    <types xsi:type="ram:RFloat" xmi:id="_O42bDJOeEeWFCpGLRMUK-Q"/>
+    <types xsi:type="ram:RLong" xmi:id="_O42bDZOeEeWFCpGLRMUK-Q"/>
+  </structuralView>
+  <messageViews xsi:type="ram:MessageView" xmi:id="_O42bDpOeEeWFCpGLRMUK-Q" specifies="_O42bA5OeEeWFCpGLRMUK-Q">
+    <specification xmi:id="_O42bD5OeEeWFCpGLRMUK-Q">
+      <fragments xsi:type="ram:MessageOccurrenceSpecification" xmi:id="_O42bEJOeEeWFCpGLRMUK-Q" covered="_O42bFJOeEeWFCpGLRMUK-Q" message="_O42bFpOeEeWFCpGLRMUK-Q"/>
+      <fragments xsi:type="ram:MessageOccurrenceSpecification" xmi:id="_O42bEZOeEeWFCpGLRMUK-Q" covered="_O42bFJOeEeWFCpGLRMUK-Q" message="_O42bGZOeEeWFCpGLRMUK-Q"/>
+      <fragments xsi:type="ram:MessageOccurrenceSpecification" xmi:id="_O42bEpOeEeWFCpGLRMUK-Q" covered="_O42bFZOeEeWFCpGLRMUK-Q" message="_O42bGZOeEeWFCpGLRMUK-Q"/>
+      <fragments xsi:type="ram:MessageOccurrenceSpecification" xmi:id="_O42bE5OeEeWFCpGLRMUK-Q" covered="_O42bFJOeEeWFCpGLRMUK-Q" message="_O42bGJOeEeWFCpGLRMUK-Q"/>
+      <lifelines xmi:id="_O42bFJOeEeWFCpGLRMUK-Q" represents="_O42bGpOeEeWFCpGLRMUK-Q" coveredBy="_O42bEJOeEeWFCpGLRMUK-Q _O42bE5OeEeWFCpGLRMUK-Q _O42bEZOeEeWFCpGLRMUK-Q"/>
+      <lifelines xmi:id="_O42bFZOeEeWFCpGLRMUK-Q" represents="_O42bF5OeEeWFCpGLRMUK-Q" coveredBy="_O42bEpOeEeWFCpGLRMUK-Q"/>
+      <messages xmi:id="_O42bFpOeEeWFCpGLRMUK-Q" sendEvent="_O42bG5OeEeWFCpGLRMUK-Q" receiveEvent="_O42bEJOeEeWFCpGLRMUK-Q" signature="_O42bA5OeEeWFCpGLRMUK-Q" messageSort="createMessage">
+        <localProperties xsi:type="ram:Reference" xmi:id="_O42bF5OeEeWFCpGLRMUK-Q" name="c1" lowerBound="1" type="_O42bApOeEeWFCpGLRMUK-Q"/>
+      </messages>
+      <messages xmi:id="_O42bGJOeEeWFCpGLRMUK-Q" sendEvent="_O42bE5OeEeWFCpGLRMUK-Q" receiveEvent="_O42bHJOeEeWFCpGLRMUK-Q" signature="_O42bA5OeEeWFCpGLRMUK-Q" messageSort="reply"/>
+      <messages xmi:id="_O42bGZOeEeWFCpGLRMUK-Q" sendEvent="_O42bEZOeEeWFCpGLRMUK-Q" receiveEvent="_O42bEpOeEeWFCpGLRMUK-Q" signature="_O42bA5OeEeWFCpGLRMUK-Q" assignTo="_O42bF5OeEeWFCpGLRMUK-Q" messageSort="createMessage"/>
+      <properties xmi:id="_O42bGpOeEeWFCpGLRMUK-Q" name="target" lowerBound="1" type="_O42bApOeEeWFCpGLRMUK-Q"/>
+      <formalGates xmi:id="_O42bG5OeEeWFCpGLRMUK-Q" message="_O42bFpOeEeWFCpGLRMUK-Q" name="in_create"/>
+      <formalGates xmi:id="_O42bHJOeEeWFCpGLRMUK-Q" message="_O42bGJOeEeWFCpGLRMUK-Q" name="out_create"/>
+    </specification>
+  </messageViews>
+  <layout xmi:id="_O43pIJOeEeWFCpGLRMUK-Q">
+    <containers xmi:id="_O43pIZOeEeWFCpGLRMUK-Q" key="_O42bAZOeEeWFCpGLRMUK-Q">
+      <value xmi:id="_O43pIpOeEeWFCpGLRMUK-Q" key="_O42bApOeEeWFCpGLRMUK-Q">
+        <value xmi:id="_O43pI5OeEeWFCpGLRMUK-Q" x="174.0" y="187.0"/>
+      </value>
+    </containers>
+    <containers xmi:id="_O43pJJOeEeWFCpGLRMUK-Q" key="_O42bDpOeEeWFCpGLRMUK-Q">
+      <value xmi:id="_O43pJZOeEeWFCpGLRMUK-Q" key="_O42bFJOeEeWFCpGLRMUK-Q">
+        <value xmi:id="_O43pJpOeEeWFCpGLRMUK-Q" x="100.0" y="94.0"/>
+      </value>
+      <value xmi:id="_O43pJ5OeEeWFCpGLRMUK-Q" key="_O42bFZOeEeWFCpGLRMUK-Q">
+        <value xmi:id="_O43pKJOeEeWFCpGLRMUK-Q" x="350.0" y="146.0"/>
+      </value>
+    </containers>
+  </layout>
+</ram:Aspect>
