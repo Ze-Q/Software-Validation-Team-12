@@ -49,7 +49,7 @@ public class TestMessageViewHandler2 {
     
     private static String modelsFolder = "../ca.mcgill.sel.ram.gui/models/demos/Bank_completed/";
     
-    
+    private static float MIN_DISTANCE = 5f;
 //    //Special attributes
 //    /** The pa. */
 //    private PApplet pa;
@@ -136,8 +136,6 @@ public class TestMessageViewHandler2 {
                     waiter.resume();
                 }
             }
-
-            
         });
         
         RamApp.getApplication().loadAspect(aspect);
@@ -395,6 +393,70 @@ public class TestMessageViewHandler2 {
         
         //79 t, note that it is the same as 69 t
         assertEquals(1, gestureID);
+    }
+    
+    @Test
+    /*
+     *	Branch 5: 67 -f-> 69 -t-> 76 -t-> 79 -f-> 81 -f-> 125 --> exit
+     *  This Branch is not possible since either 79 needs to be true or 81 needs to be true
+     */
+    public void testProcessUnistrokeEventBranch5() {
+    	InputCursor inputCursor =  new InputCursorStub();
+        
+        UnistrokeEvent uni = new UnistrokeEvent(null, MTGestureEvent.GESTURE_UPDATED, inputCursor.getTarget(),
+                null, UnistrokeGesture.NOGESTURE, inputCursor);
+        
+        int gestureID = uni.getId();
+        
+        //67 f
+        assertNotEquals(0, gestureID);
+        
+        //69 t
+        assertEquals(1, gestureID);
+        
+        Vector3D startPosition = uni.getCursor().getStartPosition();
+        Vector3D endPosition = uni.getCursor().getCurrentEvent().getPosition();
+        
+        float distance = startPosition.distance(endPosition);
+        
+        // 76 t
+        assertTrue(distance>MIN_DISTANCE);
+    }
+    
+    @Test
+    /*
+     *	Branch 6: 67 -f-> 69 -t-> 76 -t-> 79 -f-> 81 -t-> 97 -f-> 125 --> exit
+     */
+    public void testProcessUnistrokeEventBranch6() {
+    	InputCursor inputCursor =  new InputCursorStub();
+        
+        UnistrokeEvent uni = new UnistrokeEvent(null, MTGestureEvent.GESTURE_ENDED, inputCursor.getTarget(),
+                null, UnistrokeGesture.NOGESTURE, inputCursor);
+        
+        int gestureID = uni.getId();
+        
+        //67 f
+        assertNotEquals(0, gestureID);
+        
+        //69 t
+        assertEquals(1, gestureID);
+        
+        Vector3D startPosition = uni.getCursor().getStartPosition();
+        Vector3D endPosition = uni.getCursor().getCurrentEvent().getPosition();
+        
+        float distance = startPosition.distance(endPosition);
+        
+        // 76 t
+        assertTrue(distance>MIN_DISTANCE);
+        
+        // 79 f
+        assertFalse(gestureID == 1);
+        
+        // 81 t
+        assertTrue(gestureID == 2);
+        
+        // 97 f
+        
     }
     
     
