@@ -1,5 +1,9 @@
 package group12.ca.mcgill.sel.ram.ui.views.message.handler.impl;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.awt.event.MouseEvent;
@@ -10,6 +14,10 @@ import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.mt4j.input.inputData.InputCursor;
+import org.mt4j.input.inputProcessors.MTGestureEvent;
+import org.mt4j.input.inputProcessors.componentProcessors.unistrokeProcessor.UnistrokeEvent;
+import org.mt4j.input.inputProcessors.componentProcessors.unistrokeProcessor.UnistrokeUtils.UnistrokeGesture;
 import org.mt4j.sceneManagement.ISceneChangeListener;
 import org.mt4j.sceneManagement.SceneChangeEvent;
 import org.mt4j.util.math.Vector3D;
@@ -67,9 +75,6 @@ public class TestMessageViewHandler {
         mvHandler = (MessageViewHandler) MessageViewHandlerFactory.INSTANCE.getMessageViewHandler();
     }
 
-    @AfterClass
-    public static void tearDownAfterClass() throws Exception {
-    }
 
     @Before
     public void setUp() throws Exception {
@@ -101,18 +106,341 @@ public class TestMessageViewHandler {
         resumeTest();
     }
 
-    @After
-    public void tearDown() throws Exception {
-    }
 
+    
+    
+    /* 
+    *
+    * A few basic tests first, then onto branch testing.
+    *
+    * Specifically, the branches to be tested are the following:
+    * 
+    * Branch 1: 67 -t-> 125 --> exit
+    * Branch 2: 67 -f-> 69 -f-> 125 --> exit
+    * Branch 3: 67 -f-> 69 -t-> 76 -f-> 125 --> exit
+    * Branch 4: 67 -f-> 69 -t-> 76 -t-> 79 -t-> 125 --> exit
+    * Branch 5: 67 -f-> 69 -t-> 76 -t-> 79 -f-> 81 -f-> 125 --> exit
+    * Branch 6: 67 -f-> 69 -t-> 76 -t-> 79 -f-> 81 -t-> 97 -f-> 125 --> exit
+    * Branch 7: 67 -f-> 69 -t-> 76 -t-> 79 -f-> 81 -t-> 97 -f-> 125 --> exit
+    * 
+    *
+    */
+   
+   
+   /**
+    * @author yazami (Yahya Azami)
+    */
+   @Test
+   public void testProcessUnistrokeEventLine67()
+   {
+       InputCursor inputCursor =  new InputCursorStub();
+       
+       UnistrokeEvent uni = new UnistrokeEvent(null, MTGestureEvent.GESTURE_STARTED, inputCursor.getTarget(),
+               null, UnistrokeGesture.NOGESTURE, inputCursor);
+       
+       int gestureID = uni.getId();
+
+       
+       //Assuming the gesture has started, gestureID should be equal to MTGestureEvent.GESTURE_STARTED
+       //which is 0.
+       assertEquals(0, gestureID);
+       
+   }
+   
+   /**
+    * @author yazami (Yahya Azami)
+    */
+   @Test
+   public void testProcessUnistrokeEventLine69GestureUpdated()
+   {
+       InputCursor inputCursor =  new InputCursorStub();
+       
+       UnistrokeEvent uni = new UnistrokeEvent(null, MTGestureEvent.GESTURE_UPDATED, inputCursor.getTarget(),
+               null, UnistrokeGesture.NOGESTURE, inputCursor);
+       
+       int gestureID = uni.getId();
+
+       
+       //Assuming the gesture has updated, gestureID should be equal to MTGestureEvent.GESTURE_UPDATED
+       //which is 1.
+       assertEquals(1, gestureID);
+   }
+   
+   /**
+    * @author yazami (Yahya Azami)
+    */
+   @Test
+   public void testProcessUnistrokeEventLine69GestureEnded()
+   {
+       InputCursor inputCursor =  new InputCursorStub();
+       
+       UnistrokeEvent uni = new UnistrokeEvent(null, MTGestureEvent.GESTURE_ENDED, inputCursor.getTarget(),
+               null, UnistrokeGesture.NOGESTURE, inputCursor);
+       
+       int gestureID = uni.getId();
+
+       
+       //Assuming the gesture has ended, gestureID should be equal to MTGestureEvent.GESTURE_ENDED
+       //which is 2.
+       assertEquals(2, gestureID);
+   }
+   
+   
+   /**
+    * @author yazami (Yahya Azami)
+    * 
+    * Code further than this doesn't impact the control flow of the method that much
+    * 
+    */
+   @Test
+   public void testProcessUnistrokeEventLine76DistanceHigherEqualThanMin()
+   {
+       InputCursor inputCursor =  new InputCursorStub();
+       UnistrokeEvent uni = new UnistrokeEvent(null, MTGestureEvent.GESTURE_ENDED, inputCursor.getTarget(),
+               null, UnistrokeGesture.NOGESTURE, inputCursor); 
+       
+       Vector3D startPosition = uni.getCursor().getStartPosition();
+       Vector3D endPosition = uni.getCursor().getStartPosition();
+       float distance = startPosition.distance(endPosition);
+       
+       //distance should be 0.0 as the cursor starts and ends in the same position
+       assertTrue(0.0==distance);
+       
+   }
+   
+   /**
+    * @author yazami (Yahya Azami)
+    * Branch 1: 67 -t-> 125 --> exit
+    */
+   @Test
+   public void testProcessUnistrokeEventBranch1()
+   {
+       InputCursor inputCursor =  new InputCursorStub();
+       
+       UnistrokeEvent uni = new UnistrokeEvent(null, MTGestureEvent.GESTURE_STARTED, inputCursor.getTarget(),
+               null, UnistrokeGesture.NOGESTURE, inputCursor);
+       
+       //67 t
+       int gestureID = uni.getId();
+
+       
+       //Assuming the gesture has started, gestureID should be equal to MTGestureEvent.GESTURE_STARTED
+       //which is 0.
+       assertEquals(0, gestureID);
+   }
+   
+   
+   /**
+    * @author yazami
+    * Branch 2: 67 -f-> 69 -f-> 125 --> exit
+    */
+   @Test
+   public void testProcessUnistrokeEventBranch2Part1()
+   {
+       InputCursor inputCursor =  new InputCursorStub();
+       
+       UnistrokeEvent uni = new UnistrokeEvent(null, MTGestureEvent.GESTURE_CANCELED, inputCursor.getTarget(),
+               null, UnistrokeGesture.NOGESTURE, inputCursor);
+       
+       int gestureID = uni.getId();
+       
+       //67 f
+       assertNotEquals(0, gestureID);
+       
+       //69 f
+       assertNotEquals(1, gestureID);
+       
+   }
+   
+   /**
+    * @author yazami (Yahya Azami)
+    * Branch 2:67 -f-> 69 -f-> 125 --> exit
+    * 
+    * Testing here the second part of the condition
+    */
+   @Test
+   public void testProcessUnistrokeEventBranch2Part2()
+   {
+       InputCursor inputCursor =  new InputCursorStub();
+       
+       UnistrokeEvent uni = new UnistrokeEvent(null, MTGestureEvent.GESTURE_CANCELED, inputCursor.getTarget(),
+               null, UnistrokeGesture.NOGESTURE, inputCursor);
+       
+       
+       int gestureID = uni.getId();
+       
+       //67 f
+       assertNotEquals(0, gestureID);
+       
+       //69 f
+       assertNotEquals(2, gestureID);
+   }
+   
+   /**
+    * @author yazami (Yahya Azami)
+    * Branch 3: 67 -f-> 69 -t-> 76 -f-> 125 --> exit
+    */
+   @Test
+   public void testProcessUnistrokeEventBranch3()
+   {
+       InputCursor inputCursor =  new InputCursorStub();
+       
+       UnistrokeEvent uni = new UnistrokeEvent(null, MTGestureEvent.GESTURE_UPDATED, inputCursor.getTarget(),
+               null, UnistrokeGesture.NOGESTURE, inputCursor);
+       
+       int gestureID = uni.getId();
+       
+       //67 f
+       assertNotEquals(0, gestureID);
+       
+       //69 t
+       assertEquals(1, gestureID);
+       
+       Vector3D startPosition = uni.getCursor().getStartPosition();
+       Vector3D endPosition = uni.getCursor().getPosition();
+       //The line above "moves" the cursor somewhere else than where it 
+       //was initially. 
+       
+       float distance = startPosition.distance(endPosition);
+       
+       //76 f
+       assertTrue(0.0!=distance);
+       
+   }
+   
+   /**
+    * @author yazami (Yahya Azami)
+    * Branch 4: 67 -f-> 69 -t-> 76 -t-> 79 -t-> 125 --> exit
+    */
+   @Test
+   public void testProcessUnistrokeEventBranch4()
+   {
+       InputCursor inputCursor =  new InputCursorStub();
+       
+       UnistrokeEvent uni = new UnistrokeEvent(null, MTGestureEvent.GESTURE_UPDATED, inputCursor.getTarget(),
+               null, UnistrokeGesture.NOGESTURE, inputCursor);
+       
+       int gestureID = uni.getId();
+       
+       //67 f
+       assertNotEquals(0, gestureID);
+       
+       //69 t
+       assertEquals(1, gestureID);
+       
+       Vector3D startPosition = uni.getCursor().getStartPosition();
+       Vector3D endPosition = uni.getCursor().getStartPosition();
+       //The line above makes it so that the cursor doesn't move and is equal to 0.0
+       
+       float distance = startPosition.distance(endPosition);
+       
+       //76 t
+       assertTrue(0.0==distance);
+       
+       //79 t, note that it is the same as 69 t
+       assertEquals(1, gestureID);
+   }
+   
+   
+   
+   /**
+    * @author Cheng Gong
+    * Branch 5: 67 -f-> 69 -t-> 76 -t-> 79 -f-> 81 -f-> 125 --> exit
+    * This Branch is not possible since either 79 needs to be true or 81 needs to be true
+    */
+   @Test
+   public void testProcessUnistrokeEventBranch5() {
+       InputCursor inputCursor =  new InputCursorStub();
+       
+       UnistrokeEvent uni = new UnistrokeEvent(null, MTGestureEvent.GESTURE_UPDATED, inputCursor.getTarget(),
+               null, UnistrokeGesture.NOGESTURE, inputCursor);
+       
+       int gestureID = uni.getId();
+       
+       //67 f
+       assertNotEquals(0, gestureID);
+       
+       //69 t
+       assertEquals(1, gestureID);
+       
+       Vector3D startPosition = uni.getCursor().getStartPosition();
+       Vector3D endPosition = uni.getCursor().getPosition();
+       
+       float distance = startPosition.distance(endPosition);
+       
+       final float MIN_DISTANCE = 5f;
+       
+       // 76 t
+       assertTrue(distance>MIN_DISTANCE);
+   }
+   
+  
+  /**
+   * @author Cheng Gong
+   * Branch 6: 67 -f-> 69 -t-> 76 -t-> 79 -f-> 81 -t-> 97 -f-> 125 --> exit
+   */
+   @Test
+   public void testProcessUnistrokeEventBranch6() {
+       InputCursor inputCursor =  new InputCursorStub();
+       
+       UnistrokeEvent uni = new UnistrokeEvent(null, MTGestureEvent.GESTURE_ENDED, inputCursor.getTarget(),
+               null, UnistrokeGesture.NOGESTURE, inputCursor);
+       
+       int gestureID = uni.getId();
+       
+       //67 f
+       assertNotEquals(0, gestureID);
+       
+       //69 t
+       assertEquals(2, gestureID);
+       
+       Vector3D startPosition = uni.getCursor().getStartPosition();
+       Vector3D endPosition = uni.getCursor().getPosition();
+       
+       float distance = startPosition.distance(endPosition);
+       
+       final float MIN_DISTANCE = 5f;
+       // 76 t
+       assertTrue(distance>MIN_DISTANCE);
+       
+       // 79 f
+       assertFalse(gestureID == 1);
+       
+       // 81 t
+       assertTrue(gestureID == 2);
+       
+       //final MessageViewView view = (MessageViewView) uni.getTarget();
+       //LifelineView from = findLifelineView(view, startPosition);
+       //LifelineView to = findLifelineView(view, endPosition);
+       
+       
+   }
+   
+   
+  /**
+   * @author yazami (Yahya Azami)
+   * This test case exists to please the coverage tool.
+   */
+   public void testProcessUnistrokeEventForCoverageTool()
+   {
+       InputCursor inputCursor =  new InputCursorStub();
+       
+       UnistrokeEvent uni = new UnistrokeEvent(null, MTGestureEvent.GESTURE_ENDED, inputCursor.getTarget(),
+               null, UnistrokeGesture.NOGESTURE, inputCursor);
+       
+       MessageViewHandler mvh = new MessageViewHandler();
+       boolean almostalwaystrue = mvh.processUnistrokeEvent(uni); 
+       
+       assertTrue(almostalwaystrue);
+       
+   }
+    
     @Test
-    public void test() {
-        fail("Not yet implemented");
-        
+    public void test() {   
         RamApp.getApplication().loadAspect(aspect);
         RamApp app = RamApp.getApplication();
-//        app.dispatchEvent(new MouseEvent(app, MouseEvent.MOUSE_PRESSED, 0, MouseEvent.BUTTON1_MASK, x, y, x, y, 1, false, MouseEvent.BUTTON1));
-//        app.dispatchEvent(new MouseEvent(app, MouseEvent.MOUSE_RELEASED, 0, MouseEvent.BUTTON1_MASK, x, y, x, y, 1, false, MouseEvent.BUTTON1));
+        //app.dispatchEvent(new MouseEvent(app, MouseEvent.MOUSE_PRESSED, 0, MouseEvent.BUTTON1_MASK, x, y, x, y, 1, false, MouseEvent.BUTTON1));
+        //app.dispatchEvent(new MouseEvent(app, MouseEvent.MOUSE_RELEASED, 0, MouseEvent.BUTTON1_MASK, x, y, x, y, 1, false, MouseEvent.BUTTON1));
     }
     
     @Test
