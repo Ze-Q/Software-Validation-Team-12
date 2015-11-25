@@ -174,7 +174,7 @@ public class TestMessageViewController {
     }
 
     /**
-     * Test the path 1:241-253-256-257-258-266 through the method createMessage.
+     * Test the path 1:242-253-256-257-258-266 through the method createMessage.
      */
     @Test
     public void testCreateMessageTestCase1() {
@@ -208,7 +208,7 @@ public class TestMessageViewController {
     }
 
     /**
-     * Test the path 2:241-253-256-257-266 through the method createMessage.
+     * Test the path 2:242-253-256-257-266 through the method createMessage.
      */
     @Test
     public void testCreateMessageTestCase2() {
@@ -241,7 +241,7 @@ public class TestMessageViewController {
     }
 
     /**
-     * Test the path 3: 241-253-266 through the method createMessage.
+     * Test the path 3: 242-253-266 through the method createMessage.
      */
     @Test
     public void testCreateMessageTestCase3() {
@@ -270,7 +270,7 @@ public class TestMessageViewController {
     }
 
     /**
-     * Test the path 1: 95-101-103-112-121-133-134-159-162-163-164-172 through the method createMessageWithMessage.
+     * Test the path 1: 95-101-102-112-113-121-133-134-159-162-163-164-172 through the method createMessageWithMessage.
      */
     @Test
     public void testCreateLifelineWithMessageTestCase1() {
@@ -329,7 +329,7 @@ public class TestMessageViewController {
     }
 
     /**
-     * Test the path 2: 95-101-103-112-121-133-137-159-162-163-172 through the method createMessageWithMessage.
+     * Test the path 2: 95-101-104-112-121-133-137-159-162-163-172 through the method createMessageWithMessage.
      */
     @Test
     public void testCreateLifelineWithMessageTestCase2() {
@@ -382,7 +382,7 @@ public class TestMessageViewController {
     }
 
     /**
-     * Test the path 3: 95-101-103-112-159-172 through the method createMessageWithMessage.
+     * Test the path 3: 95-101-104-112-159-172 through the method createMessageWithMessage.
      */
     @Test
     public void testCreateLifelineWithMessageTestCase3() {
