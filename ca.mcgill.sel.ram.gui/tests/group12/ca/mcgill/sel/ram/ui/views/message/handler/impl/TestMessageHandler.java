@@ -46,6 +46,33 @@ public class TestMessageHandler extends MessageHandler {
     private static Aspect aspect;
     private static String aspectLocation = "../ca.mcgill.sel.ram.gui/models/MessageHandlerTest/M1.ram";
 
+    /*
+     * Resume test case
+     */
+    private static void resumeTest() {
+    	synchronized (waiter) {
+            waiter.notify();
+            shouldContinue = true;
+        }
+    }
+    
+    /*
+     * Pause test case
+     */
+    private static void pauseTest() {
+    	synchronized (waiter) {
+            while (!shouldContinue) {
+                try {
+					waiter.wait();
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+            }
+            shouldContinue = false;
+        }
+    }
+    
 	@BeforeClass
 	// sample code provided by TA to allow UI to generated before running the test cases
     public static void setUpBeforeClass() throws Exception { 
@@ -233,33 +260,4 @@ public class TestMessageHandler extends MessageHandler {
         // Child count should not change
         assertTrue(previousChildCount-containerParent.getChildCount()==0);
 	}
-
-    
-    
-    /*
-     * Pause test case
-     */
-    private static void pauseTest() {
-    	synchronized (waiter) {
-            while (!shouldContinue) {
-                try {
-					waiter.wait();
-				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-            }
-            shouldContinue = false;
-        }
-    }
-    
-    /*
-     * Resume test case
-     */
-    private static void resumeTest() {
-    	synchronized (waiter) {
-            waiter.notify();
-            shouldContinue = true;
-        }
-    }
 }
